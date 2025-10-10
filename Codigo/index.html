@@ -2,24 +2,38 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <title>FakeStore - Proyecto</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛍️ Mi Tienda Online</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
- <nav>
-  <ul>
-    <li><a href="#" id="menu-todo">Todos</a></li>
-    <li><a href="#" id="menu-hombres">Ropa masculina</a></li>
-    <li><a href="#" id="menu-mujeres">Ropa femenina</a></li>
-    <li><a href="#" id="menu-tecnologia">Tecnología</a></li>
-    <li><a href="#" id="menu-joyeria">Joyería</a></li>
-    <li><a href="#" id="menu-carrito">Carrito</a></li>
-  </ul>
-</nav>
+  <!-- Encabezado -->
+  <header class="encabezado">
+    <div class="logo">
+      <h1>Mi<span>Tienda</span></h1>
+    </div>
 
+    <button id="menu-btn" class="menu-btn">☰</button>
 
-  <main id="contenido"></main>
+    <nav id="menu" class="menu">
+      <a href="#" id="menu-inicio">Inicio</a>
+      <a href="#" data-category="men's clothing">Ropa Hombre</a>
+      <a href="#" data-category="women's clothing">Ropa Mujer</a>
+      <a href="#" data-category="electronics">Tecnología</a>
+      <a href="#" data-category="jewelery">Joyería</a>
+      <a href="#" id="menu-carrito">🛒 Carrito</a>
+    </nav>
+  </header>
 
-  <script src="app.js"></script>
+  <!-- Contenido dinámico -->
+  <main id="contenido" class="contenido"></main>
+
+  <!-- Pie de página -->
+  <footer class="pie">
+    <p>© 2025 Mi Tienda Online | Diseñado con 💖 por Jaime</p>
+  </footer>
+
+  <!-- Importar los módulos JS -->
+  <script type="module" src="./Subcodigos en js/app.js"></script>
 </body>
 </html>

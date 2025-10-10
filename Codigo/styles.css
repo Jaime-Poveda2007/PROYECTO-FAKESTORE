@@ -1,67 +1,227 @@
-body {
-  font-family: Arial, sans-serif;
-  margin: 0;
-  background-color: #fafafa;
-}
-
-nav {
-  background: #333;
-  color: white;
-  padding: 10px;
-}
-
-nav ul {
-  display: flex;
-  list-style: none;
-  gap: 15px;
+/* ------------------------------
+   Estilos base
+------------------------------ */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
 }
 
-nav a {
-  color: white;
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #f9f9f9;
+  color: #222;
+  line-height: 1.6;
+}
+
+h1, h2, h3, h4 {
+  font-weight: 600;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* ------------------------------
+   Encabezado
+------------------------------ */
+.encabezado {
+  background: #fff;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 25px;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.logo h1 {
+  font-size: 1.5em;
+  letter-spacing: 1px;
+}
+
+.logo span {
+  color: #e60023;
+}
+
+.menu-btn {
+  font-size: 1.5em;
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: none;
+}
+
+.menu {
+  display: flex;
+  gap: 20px;
+}
+
+.menu a {
   text-decoration: none;
-  font-weight: bold;
+  color: #333;
+  font-weight: 500;
+  transition: color 0.2s;
 }
 
-main {
+.menu a:hover {
+  color: #e60023;
+}
+
+/* ------------------------------
+   Contenido
+------------------------------ */
+.contenido {
+  padding: 40px 20px;
+  min-height: 80vh;
+}
+
+.home {
+  text-align: center;
   padding: 20px;
 }
 
-.grid {
+.home h1 {
+  font-size: 2em;
+  margin-bottom: 15px;
+}
+
+.btn-ver-todo {
+  background: #e60023;
+  color: #fff;
+  border: none;
+  padding: 10px 18px;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 30px;
+  transition: background 0.3s;
+}
+
+.btn-ver-todo:hover {
+  background: #b8001b;
+}
+
+/* ------------------------------
+   Productos
+------------------------------ */
+.grid-productos {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 15px;
+  gap: 25px;
+  margin-top: 30px;
 }
 
-.producto {
-  background: white;
+.card-producto {
+  background: #fff;
   border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
   padding: 15px;
-  box-shadow: 0 0 5px #ccc;
   text-align: center;
-  transition: transform 0.2s ease;
+  transition: transform 0.2s;
 }
 
-.producto:hover {
+.card-producto:hover {
   transform: scale(1.03);
 }
 
-.producto img {
-  width: 150px;
-  height: 150px;
-  object-fit: contain;
+.card-producto h4 {
+  margin: 10px 0;
+  font-size: 1em;
+  color: #333;
 }
 
-button {
-  background-color: #007bff;
-  color: white;
+.card-producto p {
+  color: #444;
+  margin-bottom: 10px;
+}
+
+.btn-agregar {
+  background: #e60023;
+  color: #fff;
   border: none;
   padding: 8px 12px;
-  border-radius: 5px;
+  border-radius: 4px;
   cursor: pointer;
+  font-size: 0.9em;
+  transition: background 0.3s;
 }
 
-button:hover {
-  background-color: #0056b3;
+.btn-agregar:hover {
+  background: #b8001b;
+}
+
+/* ------------------------------
+   Categorías Home
+------------------------------ */
+.categorias-home {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 25px;
+  margin-top: 25px;
+}
+
+.categorias-home .card {
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  overflow: hidden;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.categorias-home .card:hover {
+  transform: translateY(-5px);
+}
+
+.categorias-home img {
+  width: 100%;
+  height: 180px;
+  object-fit: cover;
+}
+
+.categorias-home h3 {
+  padding: 10px;
+  color: #222;
+}
+
+/* ------------------------------
+   Pie de página
+------------------------------ */
+.pie {
+  text-align: center;
+  padding: 15px;
+  background: #fff;
+  border-top: 1px solid #ddd;
+  color: #666;
+  font-size: 0.9em;
+}
+
+/* ------------------------------
+   Menú móvil
+------------------------------ */
+@media (max-width: 768px) {
+  .menu {
+    display: none;
+    flex-direction: column;
+    background: #fff;
+    position: absolute;
+    top: 65px;
+    right: 0;
+    width: 200px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    padding: 10px;
+  }
+
+  .menu.mostrar {
+    display: flex;
+  }
+
+  .menu-btn {
+    display: block;
+  }
 }
