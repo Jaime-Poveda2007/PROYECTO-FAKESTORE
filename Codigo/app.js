@@ -17,16 +17,24 @@ let carritoActual = {
 // -------------------------------------------------------
 // 🔹 FUNCIÓN: MOSTRAR PRODUCTOS DESDE LA API
 // -------------------------------------------------------
-menuProductos.addEventListener("click", async () => {
+// -------------------------------------------------------
+// 🔹 FUNCIÓN GENERAL PARA MOSTRAR PRODUCTOS (con o sin categoría)
+// -------------------------------------------------------
+async function mostrarProductos(categoria = null) {
   contenido.innerHTML = "<h2>Cargando productos...</h2>";
 
   try {
-    const res = await fetch("https://fakestoreapi.com/products");
+    let url = "https://fakestoreapi.com/products";
+    if (categoria) {
+      // Si se pasa una categoría, la agregamos al endpoint
+      url = `https://fakestoreapi.com/products/category/${categoria}`;
+    }
+
+    const res = await fetch(url);
     const productos = await res.json();
 
-    // Mostramos las tarjetas de producto dinámicamente
     contenido.innerHTML = `
-      <h2>Productos disponibles</h2>
+      <h2>${categoria ? categoria.toUpperCase() : "Todos los productos"}</h2>
       <div class="grid">
         ${productos.map(p => `
           <div class="producto">
@@ -40,10 +48,9 @@ menuProductos.addEventListener("click", async () => {
     `;
   } catch (error) {
     contenido.innerHTML = "<p>Error al cargar productos 😢</p>";
-    console.error(error);
+    console.error("Error:", error);
   }
-});
-
+}
 
 // -------------------------------------------------------
 // 🔹 FUNCIÓN: CREAR UN NUEVO CARRITO EN LA API
@@ -184,3 +191,32 @@ async function eliminarDelCarrito(idProducto) {
   // Volvemos a mostrar el carrito actualizado
   menuCarrito.click();
 }
+
+// -------------------------------------------------------
+// 🔹 MENÚ PRINCIPAL (Filtrado por categorías)
+// -------------------------------------------------------
+
+// Muestra todos los productos
+document.getElementById("menu-todo").addEventListener("click", () => {
+  mostrarProductos();
+});
+
+// Muestra ropa masculina
+document.getElementById("menu-hombres").addEventListener("click", () => {
+  mostrarProductos("men's clothing");
+});
+
+// Muestra ropa femenina
+document.getElementById("menu-mujeres").addEventListener("click", () => {
+  mostrarProductos("women's clothing");
+});
+
+// Muestra tecnología
+document.getElementById("menu-tecnologia").addEventListener("click", () => {
+  mostrarProductos("electronics");
+});
+
+// Muestra joyería
+document.getElementById("menu-joyeria").addEventListener("click", () => {
+  mostrarProductos("jewelery");
+});
