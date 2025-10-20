@@ -4,7 +4,11 @@ import { escapeHtml, truncate } from "./helpers.js";
 import { mostrarPago } from "./ui.js";
 
 let carritoActual = { id: null, productos: [] };
-const contenido = document.getElementById("contenido");
+let favoritos = [];
+
+function getContenido() {
+  return document.getElementById("contenido");
+}
 
 // ----------------------------------------------------
 // Inicialización global de funciones
@@ -12,6 +16,8 @@ const contenido = document.getElementById("contenido");
 export function inicializarCarrito() {
   window.agregarAlCarrito = agregarAlCarrito;
   window.mostrarCarrito = mostrarCarrito;
+  window.mostrarFavoritos = mostrarFavoritos;
+  window.toggleFavorito = toggleFavorito;
 }
 
 // ----------------------------------------------------
@@ -19,19 +25,19 @@ export function inicializarCarrito() {
 // ----------------------------------------------------
 export async function agregarAlCarrito(idProducto) {
   try {
-    // Si no existe un carrito, crear uno nuevo
+    // Crear carrito si no existe
     if (!carritoActual.id) {
       const nuevo = await crearCarritoAPI();
       carritoActual.id = nuevo.id;
       carritoActual.productos = [];
     }
 
-    // Buscar si el producto ya está en el carrito
+    // Buscar si ya existe el producto
     const existente = carritoActual.productos.find(p => p.productId === idProducto);
     if (existente) existente.quantity += 1;
     else carritoActual.productos.push({ productId: idProducto, quantity: 1 });
 
-    // Actualizar carrito en la API
+    // Actualizar en API
     await actualizarCarritoAPI(carritoActual.id, carritoActual.productos);
     alert("✅ Producto agregado al carrito");
   } catch (error) {
@@ -41,19 +47,25 @@ export async function agregarAlCarrito(idProducto) {
 }
 
 // ----------------------------------------------------
-// Mostrar carrito en pantalla
+// Mostrar carrito (sin innerHTML)
 // ----------------------------------------------------
 export async function mostrarCarrito() {
+  const contenido = getContenido();
   if (!contenido) return;
+
+  // Limpia contenido anterior
+  contenido.textContent = "";
 
   // Si el carrito está vacío
   if (!carritoActual.id || carritoActual.productos.length === 0) {
-    contenido.innerHTML = "<h2>Carrito vacío</h2>";
+    const vacio = document.createElement("h2");
+    vacio.textContent = "Carrito vacío";
+    contenido.appendChild(vacio);
     return;
   }
 
   try {
-    // Obtener detalles de los productos desde la API
+    // Obtener detalles de cada producto
     const detalles = await Promise.all(
       carritoActual.productos.map(async (p) => {
         const res = await fetch(`https://fakestoreapi.com/products/${p.productId}`);
@@ -65,63 +77,136 @@ export async function mostrarCarrito() {
     // Calcular total
     const total = detalles.reduce((sum, p) => sum + p.price * p.quantity, 0);
 
-    // Mostrar contenido del carrito
-    contenido.innerHTML = `
-      <h2>🛒 Tu carrito</h2>
-      <div class="grid-productos">
-        ${detalles
-          .map(
-            (p) => `
-          <div class="card-producto">
-            <img src="${p.image}" alt="${escapeHtml(p.title)}">
-            <h4>${escapeHtml(truncate(p.title, 60))}</h4>
-            <p>Precio: $${p.price}</p>
-            <p>Cantidad: ${p.quantity}</p>
-            <p><b>Subtotal:</b> $${(p.price * p.quantity).toFixed(2)}</p>
-          </div>
-        `
-          )
-          .join("")}
-      </div>
-      <h3>Total: $${total.toFixed(2)}</h3>
-      <div class="acciones-carrito">
-        <button id="btn-pago" class="btn-agregar">Proceder al pago 💳</button>
-      </div>
-    `;
+    // Título
+    const titulo = document.createElement("h2");
+    titulo.textContent = "🛒 Tu carrito";
+    contenido.appendChild(titulo);
 
-    // Evento para el botón de pago
-    document.getElementById("btn-pago").addEventListener("click", () => {
-      mostrarPago(total);
+    // Grid de productos
+    const grid = document.createElement("div");
+    grid.classList.add("grid-productos");
+
+    detalles.forEach((p) => {
+      const card = document.createElement("div");
+      card.classList.add("card-producto");
+
+      const img = document.createElement("img");
+      img.src = p.image;
+      img.alt = escapeHtml(p.title);
+
+      const nombre = document.createElement("h4");
+      nombre.textContent = truncate(p.title, 60);
+
+      const precio = document.createElement("p");
+      precio.textContent = `Precio: $${p.price}`;
+
+      const cantidad = document.createElement("p");
+      cantidad.textContent = `Cantidad: ${p.quantity}`;
+
+      const subtotal = document.createElement("p");
+     subtotal.textContent = `Subtotal: $${(p.price * p.quantity).toFixed(2)}`;
+
+
+      card.appendChild(img);
+      card.appendChild(nombre);
+      card.appendChild(precio);
+      card.appendChild(cantidad);
+      card.appendChild(subtotal);
+
+      grid.appendChild(card);
     });
+
+    contenido.appendChild(grid);
+
+    // Total
+    const totalTexto = document.createElement("h3");
+    totalTexto.textContent = `Total: $${total.toFixed(2)}`;
+    contenido.appendChild(totalTexto);
+
+    // Botón de pago
+    const contBoton = document.createElement("div");
+    contBoton.classList.add("acciones-carrito");
+
+    const btnPago = document.createElement("button");
+    btnPago.id = "btn-pago";
+    btnPago.classList.add("btn-agregar");
+    btnPago.textContent = "Proceder al pago 💳";
+    btnPago.addEventListener("click", () => mostrarPago(total));
+
+    contBoton.appendChild(btnPago);
+    contenido.appendChild(contBoton);
+
   } catch (error) {
     console.error("Error al mostrar carrito:", error);
-    contenido.innerHTML = "<p>Error al cargar el carrito.</p>";
+    const msg = document.createElement("p");
+    msg.textContent = "Error al cargar el carrito.";
+    contenido.appendChild(msg);
   }
 }
-let favoritos = [];
 
-window.toggleFavorito = function (id) {
-  if (favoritos.includes(id)) favoritos = favoritos.filter(f => f !== id);
-  else favoritos.push(id);
-  localStorage.setItem("favoritos", JSON.stringify(favoritos));
-  alert(" Favorito actualizado");
-};
-
-window.mostrarFavoritos = async function() {
+// ----------------------------------------------------
+// Favoritos
+// ----------------------------------------------------
+function toggleFavorito(id) {
   favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+  if (favoritos.includes(id)) {
+    favoritos = favoritos.filter(f => f !== id);
+  } else {
+    favoritos.push(id);
+  }
+  localStorage.setItem("favoritos", JSON.stringify(favoritos));
+  alert("Favorito actualizado");
+}
+
+// ----------------------------------------------------
+// Mostrar favoritos (sin innerHTML)
+// ----------------------------------------------------
+async function mostrarFavoritos() {
+  const contenido = getContenido();
+  if (!contenido) return;
+  contenido.textContent = "";
+
+  favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+
+  const titulo = document.createElement("h2");
+  titulo.textContent = "Favoritos";
+  contenido.appendChild(titulo);
+
+  const grid = document.createElement("div");
+  grid.classList.add("grid-productos");
+
   const productos = await Promise.all(
-    favoritos.map(async id => (await fetch(`https://fakestoreapi.com/products/${id}`)).json())
+    favoritos.map(async (id) => {
+      const res = await fetch(`https://fakestoreapi.com/products/${id}`);
+      return await res.json();
+    })
   );
-  contenido.innerHTML = `
-    <h2>Favoritos</h2>
-    <div class="grid-productos">
-      ${productos.map(p => `
-        <div class="card-producto">
-          <img src="${p.image}" alt="${escapeHtml(p.title)}">
-          <h4>${escapeHtml(p.title)}</h4>
-          <p>$${p.price}</p>
-          <button class="btn-agregar" onclick="agregarAlCarrito(${p.id})">Agregar al carrito</button>
-        </div>
-      `).join("")}
-    </div>`;
-};
+
+  productos.forEach((p) => {
+    const card = document.createElement("div");
+    card.classList.add("card-producto");
+
+    const img = document.createElement("img");
+    img.src = p.image;
+    img.alt = escapeHtml(p.title);
+
+    const nombre = document.createElement("h4");
+    nombre.textContent = escapeHtml(p.title);
+
+    const precio = document.createElement("p");
+    precio.textContent = `$${p.price}`;
+
+    const btnCarrito = document.createElement("button");
+    btnCarrito.classList.add("btn-agregar");
+    btnCarrito.textContent = "Agregar al carrito";
+    btnCarrito.addEventListener("click", () => agregarAlCarrito(p.id));
+
+    card.appendChild(img);
+    card.appendChild(nombre);
+    card.appendChild(precio);
+    card.appendChild(btnCarrito);
+    grid.appendChild(card);
+  });
+
+  contenido.appendChild(grid);
+}
