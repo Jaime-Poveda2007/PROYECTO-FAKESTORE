@@ -1,3 +1,4 @@
 {
-    "livePreview.defaultPreviewPath": "/Codigo/index.html"
+    "livePreview.defaultPreviewPath": "/Codigo/index.html",
+    "liveServer.settings.port": 5502
 }

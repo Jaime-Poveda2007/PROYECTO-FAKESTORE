@@ -70,6 +70,46 @@ img {
 .menu a:hover {
   color: #e60023;
 }
+/* ------------------------------
+   Menú desplegable con hover (versión escritorio)
+------------------------------ */
+@media (min-width: 769px) {
+  .menu {
+    position: relative;
+  }
+
+  .menu a {
+    position: relative;
+    padding: 10px;
+  }
+
+  /* Contenedor oculto por defecto */
+  .menu:hover {
+    display: flex;
+    gap: 20px;
+  }
+
+  /* Efecto visual suave */
+  .menu a::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: #e60023;
+    transition: width 0.3s ease;
+  }
+
+  .menu a:hover::after {
+    width: 100%;
+  }
+
+  /* En escritorio, el menú siempre visible pero sin necesidad de click */
+  .menu-btn {
+    display: none; /* oculta el botón hamburguesa */
+  }
+}
 
 /* ------------------------------
    Contenido
@@ -202,26 +242,165 @@ img {
 }
 
 /* ------------------------------
-   Menú móvil
+   Menú móvil con animación
 ------------------------------ */
 @media (max-width: 768px) {
   .menu {
-    display: none;
-    flex-direction: column;
-    background: #fff;
     position: absolute;
     top: 65px;
-    right: 0;
+    right: 15px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
     width: 200px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    padding: 10px;
+    padding: 15px;
+    opacity: 0;
+    transform: translateY(-10px);
+    pointer-events: none;
+    transition: all 0.3s ease;
   }
 
+  /* Cuando el menú está visible */
   .menu.mostrar {
-    display: flex;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
+  }
+
+  /* Botón hamburguesa visible solo en móvil */
+  .menu-btn {
+    display: block;
+    font-size: 1.6em;
+    border: none;
+    background: none;
+    cursor: pointer;
+    color: #333;
+    transition: transform 0.3s ease;
+  }
+
+  /* Pequeña animación al presionar */
+  .menu-btn:active {
+    transform: scale(0.9);
+  }
+
+  /* Estilo de los enlaces dentro del menú */
+  .menu a {
+    padding: 10px 0;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s, transform 0.2s;
+  }
+
+  .menu a:hover {
+    color: #e60023;
+    transform: translateX(4px);
+  }
+}
+
+/* ------------------------------
+   Menú desplegable minimalista
+------------------------------ */
+.menu {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  background-color: #ffffff;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  position: absolute;
+  top: 70px;
+  right: 15px;
+  width: 230px;
+  border-radius: 14px;
+  overflow: hidden;
+  transition: all 0.3s ease-in-out;
+  z-index: 1000;
+}
+
+.menu.mostrar {
+  display: flex;
+}
+
+.menu a {
+  text-decoration: none;
+  color: #222;
+  padding: 14px 20px;
+  width: 100%;
+  text-align: center;
+  font-weight: 500;
+  transition: background 0.2s, color 0.2s;
+}
+
+.menu a:hover {
+  background: #f5f5f5;
+  color: #e60023;
+}
+
+/* Botón hamburguesa */
+.menu-btn {
+  font-size: 2rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  transition: transform 0.2s;
+}
+
+.menu-btn:hover {
+  transform: scale(1.1);
+}
+
+/* Versión escritorio */
+@media (min-width: 768px) {
+  .menu {
+    display: flex !important;
+    flex-direction: row;
+    position: static;
+    box-shadow: none;
+    width: auto;
+    background: none;
+    border-radius: 0;
+  }
+
+  .menu a {
+    padding: 10px 15px;
+    color: #333;
+  }
+
+  .menu a:hover {
+    background: none;
+    color: #e60023;
   }
 
   .menu-btn {
-    display: block;
+    display: none;
   }
+}
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  max-width: 350px;
+  margin: 30px auto;
+}
+
+.formulario input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.login h2, .registro h2 {
+  text-align: center;
+  margin-bottom: 15px;
+}
+.acciones-carrito {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.acciones-carrito .btn-agregar {
+  font-size: 1em;
+  padding: 12px 20px;
 }

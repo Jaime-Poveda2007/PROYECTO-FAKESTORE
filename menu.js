@@ -1,5 +1,5 @@
 // Subcodigos en js/menu.js
-import { mostrarHome, mostrarProductos } from "./ui.js";
+import { mostrarHome, mostrarProductos, mostrarLogin, mostrarRegistro } from "./ui.js";
 import { mostrarCarrito } from "./carrito.js";
 
 export function inicializarMenu() {
@@ -28,6 +28,12 @@ export function inicializarMenu() {
       if (e.target.id === "menu-inicio") mostrarHome();
       else if (e.target.id === "menu-carrito") mostrarCarrito();
       else if (cat) mostrarProductos(cat);
+      if (e.target.id === "menu-inicio") mostrarHome();
+      else if (e.target.id === "menu-carrito") mostrarCarrito();
+    else if (e.target.id === "menu-login") mostrarLogin();
+    else if (e.target.id === "menu-register") mostrarRegistro();
+    else if (cat) mostrarProductos(cat);
+
     });
   });
 
