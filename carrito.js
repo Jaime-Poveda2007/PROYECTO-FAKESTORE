@@ -25,19 +25,16 @@ export function inicializarCarrito() {
 // ----------------------------------------------------
 export async function agregarAlCarrito(idProducto) {
   try {
-    // Crear carrito si no existe
     if (!carritoActual.id) {
       const nuevo = await crearCarritoAPI();
       carritoActual.id = nuevo.id;
       carritoActual.productos = [];
     }
 
-    // Buscar si ya existe el producto
     const existente = carritoActual.productos.find(p => p.productId === idProducto);
     if (existente) existente.quantity += 1;
     else carritoActual.productos.push({ productId: idProducto, quantity: 1 });
 
-    // Actualizar en API
     await actualizarCarritoAPI(carritoActual.id, carritoActual.productos);
     alert("✅ Producto agregado al carrito");
   } catch (error) {
@@ -52,11 +49,8 @@ export async function agregarAlCarrito(idProducto) {
 export async function mostrarCarrito() {
   const contenido = getContenido();
   if (!contenido) return;
-
-  // Limpia contenido anterior
   contenido.textContent = "";
 
-  // Si el carrito está vacío
   if (!carritoActual.id || carritoActual.productos.length === 0) {
     const vacio = document.createElement("h2");
     vacio.textContent = "Carrito vacío";
@@ -65,7 +59,6 @@ export async function mostrarCarrito() {
   }
 
   try {
-    // Obtener detalles de cada producto
     const detalles = await Promise.all(
       carritoActual.productos.map(async (p) => {
         const res = await fetch(`https://fakestoreapi.com/products/${p.productId}`);
@@ -74,15 +67,12 @@ export async function mostrarCarrito() {
       })
     );
 
-    // Calcular total
     const total = detalles.reduce((sum, p) => sum + p.price * p.quantity, 0);
 
-    // Título
     const titulo = document.createElement("h2");
     titulo.textContent = "🛒 Tu carrito";
     contenido.appendChild(titulo);
 
-    // Grid de productos
     const grid = document.createElement("div");
     grid.classList.add("grid-productos");
 
@@ -104,26 +94,18 @@ export async function mostrarCarrito() {
       cantidad.textContent = `Cantidad: ${p.quantity}`;
 
       const subtotal = document.createElement("p");
-     subtotal.textContent = `Subtotal: $${(p.price * p.quantity).toFixed(2)}`;
+      subtotal.textContent = `Subtotal: $${(p.price * p.quantity).toFixed(2)}`;
 
-
-      card.appendChild(img);
-      card.appendChild(nombre);
-      card.appendChild(precio);
-      card.appendChild(cantidad);
-      card.appendChild(subtotal);
-
+      card.append(img, nombre, precio, cantidad, subtotal);
       grid.appendChild(card);
     });
 
-    contenido.appendChild(grid);
+    contenido.append(grid);
 
-    // Total
     const totalTexto = document.createElement("h3");
     totalTexto.textContent = `Total: $${total.toFixed(2)}`;
     contenido.appendChild(totalTexto);
 
-    // Botón de pago
     const contBoton = document.createElement("div");
     contBoton.classList.add("acciones-carrito");
 
@@ -201,10 +183,7 @@ async function mostrarFavoritos() {
     btnCarrito.textContent = "Agregar al carrito";
     btnCarrito.addEventListener("click", () => agregarAlCarrito(p.id));
 
-    card.appendChild(img);
-    card.appendChild(nombre);
-    card.appendChild(precio);
-    card.appendChild(btnCarrito);
+    card.append(img, nombre, precio, btnCarrito);
     grid.appendChild(card);
   });
 

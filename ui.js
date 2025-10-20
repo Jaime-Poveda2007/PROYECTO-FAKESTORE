@@ -1,4 +1,3 @@
-// Subcódigos en js/ui.js
 import { obtenerProductos, obtenerProductosPorCategoria } from "./api.js";
 import { escapeHtml, truncate } from "./helpers.js";
 import { agregarAlCarrito } from "./carrito.js";
@@ -129,7 +128,6 @@ export async function mostrarProductos(categoria = "todos") {
   } catch (error) {
     console.error("Error al cargar productos:", error.message);
     alert("⚠️ Error: " + error.message);
-
     contenido.textContent = "Error al cargar productos.";
   }
 }
@@ -193,17 +191,12 @@ export function mostrarHome() {
     const h3 = document.createElement("h3");
     h3.textContent = c.titulo;
 
-    card.appendChild(img);
-    card.appendChild(h3);
+    card.append(img, h3);
     card.addEventListener("click", () => mostrarProductos(c.cat));
-
     grid.appendChild(card);
   });
 
-  seccion.appendChild(h1);
-  seccion.appendChild(p);
-  seccion.appendChild(btnVerTodo);
-  seccion.appendChild(grid);
+  seccion.append(h1, p, btnVerTodo, grid);
   contenido.appendChild(seccion);
 
   btnVerTodo.addEventListener("click", () => mostrarProductos("todos"));
@@ -211,7 +204,7 @@ export function mostrarHome() {
 }
 
 // ----------------------------------------------------
-// Formularios de usuario (creados por DOM)
+// Formularios de usuario
 // ----------------------------------------------------
 export function mostrarLogin() {
   const contenido = getContenido();
@@ -346,7 +339,8 @@ export async function mostrarDetalleProducto(id) {
   if (!contenido) return;
   contenido.textContent = "";
 
-  const res = await fetch(`https://fakestoreapi.com/products/${id}`);
+  // ✅ Fetch directo (el proxy ya está en api.js)
+  const res = await fetch("https://fakestoreapi.com/products/" + id);
   const p = await res.json();
 
   const seccion = document.createElement("section");
