@@ -15,27 +15,41 @@ export async function mostrarProductos(categoria = "todos") {
         ? await obtenerProductos()
         : await obtenerProductosPorCategoria(categoria);
 
-    contenido.innerHTML = `
-      <section class="productos">
-        <h2>${categoria === "todos" ? "Todos los productos" : categoria}</h2>
-        <div class="grid-productos">
-          ${productos
-            .map(
-              (p) => `
-            <div class="card-producto">
-              <img src="${p.image}" alt="${escapeHtml(p.title)}">
-              <h4>${escapeHtml(truncate(p.title, 70))}</h4>
-              <p>$${p.price}</p>
-              <button class="btn-agregar" data-id="${
-                p.id
-              }">Agregar al carrito</button>
-            </div>
-          `
-            )
-            .join("")}
+contenido.innerHTML = `
+  <section class="productos">
+    <h2>${categoria === "todos" ? "Todos los productos" : categoria}</h2>
+    <input type="text" id="buscador" placeholder="Buscar producto..." class="buscador">
+    <div class="grid-productos">
+      ${productos
+        .map(
+          (p) => `
+        <div class="card-producto">
+          <img src="${p.image}" alt="${escapeHtml(p.title)}">
+         <h4 onclick="mostrarDetalleProducto(${p.id})">${escapeHtml(truncate(p.title, 70))}</h4>
+          <p>$${p.price}</p>
+          <div class="acciones-producto">
+  <button class="btn-agregar" data-id="${p.id}">Agregar al carrito</button>
+  <button class="btn-favorito" onclick="toggleFavorito(${p.id})">⭐</button>
+</div>
+
         </div>
-      </section>
-    `;
+      `
+        )
+        .join("")}
+    </div>
+  </section>
+`;
+// Buscador dinámico
+const input = document.getElementById("buscador");
+input.addEventListener("input", (e) => {
+  const valor = e.target.value.toLowerCase();
+  document.querySelectorAll(".card-producto").forEach((card) => {
+    const titulo = card.querySelector("h4").textContent.toLowerCase();
+    card.style.display = titulo.includes(valor) ? "block" : "none";
+  });
+});
+
+
 
     // Escuchamos clicks en botones del carrito
     document.querySelectorAll(".btn-agregar").forEach((btn) => {
@@ -143,4 +157,67 @@ export function mostrarPago(total = 0) {
     alert("✅ Pago realizado con éxito. ¡Gracias por tu compra!");
     mostrarHome(); // vuelve al inicio
   });
+}
+export async function mostrarDetalleProducto(id) {
+  const res = await fetch(`https://fakestoreapi.com/products/${id}`);
+  const p = await res.json();
+
+  contenido.innerHTML = `
+    <section class="detalle">
+      <img src="${p.image}" alt="${escapeHtml(p.title)}">
+      <h2>${escapeHtml(p.title)}</h2>
+      <p>${escapeHtml(p.description)}</p>
+      <p><b>Precio:</b> $${p.price}</p>
+      <button class="btn-agregar" onclick="agregarAlCarrito(${p.id})">Agregar al carrito</button>
+    </section>
+  `;
+}
+// ----------------------------------------------------
+// Sección Informativa
+// ----------------------------------------------------
+export function mostrarInformativa() {
+  const contenedor = document.getElementById("contenido");
+  contenedor.innerHTML = `
+    <section class="informativa">
+      <div class="info-header">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/0/0a/Fake_Store_Logo.png" 
+             alt="Logo Tienda" class="info-logo">
+        <h2>Acerca de Mi Tienda Online</h2>
+      </div>
+
+      <div class="info-grid">
+        <div class="info-card">
+          <h3>🛍️ ¿Qué es esta app?</h3>
+          <p>Una tienda en línea que utiliza la <b>FakeStore API</b> para mostrar productos reales, 
+          permitiéndote explorar, agregar al carrito y marcar tus favoritos.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>💡 Funcionalidades</h3>
+          <ul>
+            <li>🔎 Búsqueda dinámica por nombre</li>
+            <li>🧭 Filtro por categoría</li>
+            <li>💰 Carrito funcional conectado a la API</li>
+            <li>⭐ Sistema de favoritos con LocalStorage</li>
+          </ul>
+        </div>
+
+        <div class="info-card">
+          <h3>📱 Tecnologías utilizadas</h3>
+          <p>HTML5, CSS3 y JavaScript (ES6+). Consumo de datos desde la API pública 
+          <a href="https://fakestoreapi.com/" target="_blank">FakeStoreAPI</a>.</p>
+        </div>
+
+        <div class="info-card">
+          <h3>👨‍💻 Desarrollador</h3>
+          <p>Proyecto realizado por <b>Jaime</b> como parte del curso de desarrollo web. 
+          Inspirado en la estructura de una app e-commerce moderna.</p>
+        </div>
+      </div>
+
+      <div class="info-footer">
+        <p>🧾 Datos generados en tiempo real desde la API.</p>
+      </div>
+    </section>
+  `;
 }

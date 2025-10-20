@@ -1,5 +1,21 @@
 /* ------------------------------
-   Estilos base
+   Variables CSS
+------------------------------ */
+:root {
+  --color-principal: #e60023;
+  --color-fondo: #fff;
+  --color-texto: #222;
+  --color-secundario: #666;
+  --color-borde: #ddd;
+  --shadow-light: 0 2px 8px rgba(0,0,0,0.1);
+  --shadow-medium: 0 4px 12px rgba(0,0,0,0.15);
+  --border-radius: 10px;
+  --transition-fast: 0.2s ease;
+  --transition-medium: 0.3s ease;
+}
+
+/* ------------------------------
+   Reset y base
 ------------------------------ */
 * {
   margin: 0;
@@ -10,7 +26,7 @@
 body {
   font-family: "Poppins", sans-serif;
   background-color: #f9f9f9;
-  color: #222;
+  color: var(--color-texto);
   line-height: 1.6;
 }
 
@@ -27,8 +43,8 @@ img {
    Encabezado
 ------------------------------ */
 .encabezado {
-  background: #fff;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  background: var(--color-fondo);
+  box-shadow: var(--shadow-light);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -39,75 +55,111 @@ img {
 }
 
 .logo h1 {
-  font-size: 1.5em;
-  letter-spacing: 1px;
+  font-size: 1.6em;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .logo span {
-  color: #e60023;
+  color: var(--color-principal);
 }
 
+/* ------------------------------
+   Menú y botón hamburguesa
+------------------------------ */
 .menu-btn {
-  font-size: 1.5em;
+  font-size: 1.8em;
   background: none;
   border: none;
   cursor: pointer;
-  display: none;
+  color: var(--color-texto);
+  transition: transform var(--transition-fast);
+  z-index: 2000;
+}
+
+.menu-btn:hover {
+  transform: scale(1.1);
 }
 
 .menu {
+  display: none;
+  flex-direction: column;
+  position: absolute;
+  top: 70px;
+  right: 25px;
+  background: rgba(255,255,255,0.92);
+  backdrop-filter: blur(12px);
+  box-shadow: var(--shadow-medium);
+  border-radius: 14px;
+  overflow: hidden;
+  width: 230px;
+  padding: 10px 0;
+  animation: fadeIn var(--transition-medium);
+  z-index: 1000;
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+  transition: all var(--transition-medium);
+}
+
+.menu.mostrar {
   display: flex;
-  gap: 20px;
+  opacity: 1;
+  transform: translateY(0);
+  pointer-events: auto;
 }
 
 .menu a {
   text-decoration: none;
-  color: #333;
+  color: var(--color-texto);
+  padding: 12px 20px;
+  width: 100%;
+  text-align: center;
   font-weight: 500;
-  transition: color 0.2s;
+  transition: background var(--transition-fast), color var(--transition-fast), transform var(--transition-fast);
 }
 
 .menu a:hover {
-  color: #e60023;
+  background: #f5f5f5;
+  color: var(--color-principal);
+  transform: translateX(4px);
 }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 /* ------------------------------
-   Menú desplegable con hover (versión escritorio)
+   Version escritorio
 ------------------------------ */
-@media (min-width: 769px) {
+@media (min-width: 768px) {
   .menu {
-    position: relative;
+    display: flex !important;
+    flex-direction: row;
+    position: static;
+    width: auto;
+    background: none;
+    box-shadow: none;
+    border-radius: 0;
+    opacity: 1;
+    transform: translateY(0);
+    pointer-events: auto;
   }
 
   .menu a {
-    position: relative;
-    padding: 10px;
+    padding: 10px 15px;
+    color: var(--color-texto);
   }
 
-  /* Contenedor oculto por defecto */
-  .menu:hover {
-    display: flex;
-    gap: 20px;
+  .menu a:hover {
+    background: none;
+    color: var(--color-principal);
+    transform: none;
   }
 
-  /* Efecto visual suave */
-  .menu a::after {
-    content: "";
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background: #e60023;
-    transition: width 0.3s ease;
-  }
-
-  .menu a:hover::after {
-    width: 100%;
-  }
-
-  /* En escritorio, el menú siempre visible pero sin necesidad de click */
   .menu-btn {
-    display: none; /* oculta el botón hamburguesa */
+    display: none;
   }
 }
 
@@ -119,264 +171,85 @@ img {
   min-height: 80vh;
 }
 
-.home {
-  text-align: center;
-  padding: 20px;
-}
-
-.home h1 {
-  font-size: 2em;
-  margin-bottom: 15px;
+/* ------------------------------
+   Botones
+------------------------------ */
+.btn-ver-todo, .btn-agregar {
+  background: var(--color-principal);
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background var(--transition-medium);
 }
 
 .btn-ver-todo {
-  background: #e60023;
-  color: #fff;
-  border: none;
   padding: 10px 18px;
-  border-radius: 5px;
-  cursor: pointer;
   margin-bottom: 30px;
-  transition: background 0.3s;
 }
 
-.btn-ver-todo:hover {
-  background: #b8001b;
-}
-
-/* ------------------------------
-   Productos
------------------------------- */
-.grid-productos {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 25px;
-  margin-top: 30px;
-}
-
-.card-producto {
-  background: #fff;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
-  padding: 15px;
-  text-align: center;
-  transition: transform 0.2s;
-}
-
-.card-producto:hover {
-  transform: scale(1.03);
-}
-
-.card-producto h4 {
-  margin: 10px 0;
-  font-size: 1em;
-  color: #333;
-}
-
-.card-producto p {
-  color: #444;
-  margin-bottom: 10px;
-}
-
-.btn-agregar {
-  background: #e60023;
-  color: #fff;
-  border: none;
-  padding: 8px 12px;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.9em;
-  transition: background 0.3s;
-}
-
+.btn-ver-todo:hover,
 .btn-agregar:hover {
   background: #b8001b;
 }
 
-/* ------------------------------
-   Categorías Home
------------------------------- */
-.categorias-home {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-  gap: 25px;
-  margin-top: 25px;
-}
-
-.categorias-home .card {
-  background: #fff;
-  border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-  overflow: hidden;
-  text-align: center;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.categorias-home .card:hover {
-  transform: translateY(-5px);
-}
-
-.categorias-home img {
-  width: 100%;
-  height: 180px;
-  object-fit: cover;
-}
-
-.categorias-home h3 {
-  padding: 10px;
-  color: #222;
-}
-
-/* ------------------------------
-   Pie de página
------------------------------- */
-.pie {
-  text-align: center;
-  padding: 15px;
-  background: #fff;
-  border-top: 1px solid #ddd;
-  color: #666;
+.btn-agregar {
+  padding: 8px 12px;
   font-size: 0.9em;
 }
 
 /* ------------------------------
-   Menú móvil con animación
+   Grid de productos
 ------------------------------ */
-@media (max-width: 768px) {
-  .menu {
-    position: absolute;
-    top: 65px;
-    right: 15px;
-    background: #fff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-    display: flex;
-    flex-direction: column;
-    width: 200px;
-    padding: 15px;
-    opacity: 0;
-    transform: translateY(-10px);
-    pointer-events: none;
-    transition: all 0.3s ease;
-  }
+.grid-productos, .grid-base, .info-grid {
+  display: grid;
+  gap: 25px;
+  margin-top: 30px;
+  justify-items: center;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
 
-  /* Cuando el menú está visible */
-  .menu.mostrar {
-    opacity: 1;
-    transform: translateY(0);
-    pointer-events: auto;
-  }
+/* Tarjetas */
+.card-producto, .categorias-home .card, .info-card {
+  background: var(--color-fondo);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  overflow: hidden;
+  text-align: center;
+  transition: transform var(--transition-fast);
+  width: 100%;
+  max-width: 250px;
+}
 
-  /* Botón hamburguesa visible solo en móvil */
-  .menu-btn {
-    display: block;
-    font-size: 1.6em;
-    border: none;
-    background: none;
-    cursor: pointer;
-    color: #333;
-    transition: transform 0.3s ease;
-  }
+.card-producto:hover, 
+.categorias-home .card:hover, 
+.info-card:hover {
+  transform: scale(1.03);
+}
 
-  /* Pequeña animación al presionar */
-  .menu-btn:active {
-    transform: scale(0.9);
-  }
+/* Imágenes */
+.card-producto img,
+.categorias-home img,
+.info-card img {
+  width: 100%;
+  height: auto;
+  max-height: 180px;
+  object-fit: contain;
+  border-radius: var(--border-radius);
+  display: block;
+  margin: 0 auto;
+}
 
-  /* Estilo de los enlaces dentro del menú */
-  .menu a {
-    padding: 10px 0;
-    color: #333;
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.2s, transform 0.2s;
-  }
-
-  .menu a:hover {
-    color: #e60023;
-    transform: translateX(4px);
-  }
+/* Textos */
+.card-producto h4, .categorias-home h3, .info-card h3 {
+  color: var(--color-texto);
+  margin: 10px 0;
+  font-size: 1em;
 }
 
 /* ------------------------------
-   Menú desplegable minimalista
+   Formulario
 ------------------------------ */
-.menu {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  background-color: #ffffff;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  position: absolute;
-  top: 70px;
-  right: 15px;
-  width: 230px;
-  border-radius: 14px;
-  overflow: hidden;
-  transition: all 0.3s ease-in-out;
-  z-index: 1000;
-}
-
-.menu.mostrar {
-  display: flex;
-}
-
-.menu a {
-  text-decoration: none;
-  color: #222;
-  padding: 14px 20px;
-  width: 100%;
-  text-align: center;
-  font-weight: 500;
-  transition: background 0.2s, color 0.2s;
-}
-
-.menu a:hover {
-  background: #f5f5f5;
-  color: #e60023;
-}
-
-/* Botón hamburguesa */
-.menu-btn {
-  font-size: 2rem;
-  background: none;
-  border: none;
-  cursor: pointer;
-  transition: transform 0.2s;
-}
-
-.menu-btn:hover {
-  transform: scale(1.1);
-}
-
-/* Versión escritorio */
-@media (min-width: 768px) {
-  .menu {
-    display: flex !important;
-    flex-direction: row;
-    position: static;
-    box-shadow: none;
-    width: auto;
-    background: none;
-    border-radius: 0;
-  }
-
-  .menu a {
-    padding: 10px 15px;
-    color: #333;
-  }
-
-  .menu a:hover {
-    background: none;
-    color: #e60023;
-  }
-
-  .menu-btn {
-    display: none;
-  }
-}
 .formulario {
   display: flex;
   flex-direction: column;
@@ -387,7 +260,7 @@ img {
 
 .formulario input {
   padding: 10px;
-  border: 1px solid #ddd;
+  border: 1px solid var(--color-borde);
   border-radius: 5px;
 }
 
@@ -395,6 +268,36 @@ img {
   text-align: center;
   margin-bottom: 15px;
 }
+
+/* ------------------------------
+   Buscador
+------------------------------ */
+.buscador {
+  display: block;
+  margin: 15px auto 25px;
+  padding: 10px 15px;
+  width: 100%;
+  max-width: 400px;
+  border: 1px solid var(--color-borde);
+  border-radius: 6px;
+  font-size: 1em;
+}
+
+/* ------------------------------
+   Pie de página
+------------------------------ */
+.pie {
+  text-align: center;
+  padding: 15px;
+  background: var(--color-fondo);
+  border-top: 1px solid var(--color-borde);
+  color: var(--color-secundario);
+  font-size: 0.9em;
+}
+
+/* ------------------------------
+   Acciones Carrito
+------------------------------ */
 .acciones-carrito {
   text-align: center;
   margin-top: 20px;

@@ -98,3 +98,30 @@ export async function mostrarCarrito() {
     contenido.innerHTML = "<p>Error al cargar el carrito.</p>";
   }
 }
+let favoritos = [];
+
+window.toggleFavorito = function (id) {
+  if (favoritos.includes(id)) favoritos = favoritos.filter(f => f !== id);
+  else favoritos.push(id);
+  localStorage.setItem("favoritos", JSON.stringify(favoritos));
+  alert("⭐ Favorito actualizado");
+};
+
+window.mostrarFavoritos = async function() {
+  favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+  const productos = await Promise.all(
+    favoritos.map(async id => (await fetch(`https://fakestoreapi.com/products/${id}`)).json())
+  );
+  contenido.innerHTML = `
+    <h2>⭐ Favoritos</h2>
+    <div class="grid-productos">
+      ${productos.map(p => `
+        <div class="card-producto">
+          <img src="${p.image}" alt="${escapeHtml(p.title)}">
+          <h4>${escapeHtml(p.title)}</h4>
+          <p>$${p.price}</p>
+          <button class="btn-agregar" onclick="agregarAlCarrito(${p.id})">Agregar al carrito</button>
+        </div>
+      `).join("")}
+    </div>`;
+};
