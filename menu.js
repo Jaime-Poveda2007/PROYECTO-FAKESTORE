@@ -43,4 +43,14 @@ export function inicializarMenu() {
       menu.classList.remove("mostrar");
     }
   });
+
+    // 🔹 Clic en el logo para volver al inicio
+  const logo = document.getElementById("logo-inicio");
+  if (logo) {
+    logo.addEventListener("click", (e) => {
+      e.preventDefault();
+      mostrarHome();
+    });
+  }
+
 }

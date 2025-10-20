@@ -307,3 +307,97 @@ img {
   font-size: 1em;
   padding: 12px 20px;
 }
+.logo-img {
+  height: 150px;      /* antes 45px */
+  width: auto;
+  object-fit: contain;
+}
+/* ------------------------------
+   Sección Informativa
+------------------------------ */
+.informativa {
+  background: var(--color-fondo);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  padding: 40px 25px;
+  max-width: 1000px;
+  margin: 0 auto;
+  text-align: center;
+  animation: fadeIn var(--transition-medium);
+}
+
+/* Encabezado */
+.info-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 30px;
+}
+
+.info-header img {
+  height: 250px;
+  width: auto;
+  margin-bottom: 10px;
+  object-fit: contain;
+}
+
+.info-header h2 {
+  font-size: 1.8em;
+  color: var(--color-principal);
+  font-weight: 700;
+}
+
+/* Tarjetas dentro del grid (ya tienes .info-grid y .info-card definidos) */
+.info-card {
+  background: var(--color-fondo);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--border-radius);
+  box-shadow: var(--shadow-light);
+  padding: 20px;
+  max-width: 300px;
+  transition: transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: var(--shadow-medium);
+}
+
+/* Títulos y texto dentro de las tarjetas */
+.info-card h3 {
+  color: var(--color-principal);
+  font-size: 1.1em;
+  margin-bottom: 10px;
+}
+
+.info-card p, 
+.info-card li {
+  color: var(--color-texto);
+  font-size: 0.95em;
+  line-height: 1.6;
+}
+
+.info-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.info-card ul li::before {
+  content: "• ";
+  color: var(--color-principal);
+  font-weight: bold;
+}
+
+/* Pie de la sección */
+.info-footer {
+  margin-top: 40px;
+  color: var(--color-secundario);
+  font-size: 0.9em;
+  border-top: 1px solid var(--color-borde);
+  padding-top: 15px;
+}
+.logo a {
+  display: inline-block;
+  cursor: pointer;
+}

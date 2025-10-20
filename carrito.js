@@ -48,7 +48,7 @@ export async function mostrarCarrito() {
 
   // Si el carrito está vacío
   if (!carritoActual.id || carritoActual.productos.length === 0) {
-    contenido.innerHTML = "<h2>🛒 Carrito vacío</h2>";
+    contenido.innerHTML = "<h2>Carrito vacío</h2>";
     return;
   }
 
@@ -104,7 +104,7 @@ window.toggleFavorito = function (id) {
   if (favoritos.includes(id)) favoritos = favoritos.filter(f => f !== id);
   else favoritos.push(id);
   localStorage.setItem("favoritos", JSON.stringify(favoritos));
-  alert("⭐ Favorito actualizado");
+  alert(" Favorito actualizado");
 };
 
 window.mostrarFavoritos = async function() {
@@ -113,7 +113,7 @@ window.mostrarFavoritos = async function() {
     favoritos.map(async id => (await fetch(`https://fakestoreapi.com/products/${id}`)).json())
   );
   contenido.innerHTML = `
-    <h2>⭐ Favoritos</h2>
+    <h2>Favoritos</h2>
     <div class="grid-productos">
       ${productos.map(p => `
         <div class="card-producto">
