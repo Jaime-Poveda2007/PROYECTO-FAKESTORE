@@ -5,6 +5,9 @@ import { agregarAlCarrito, mostrarCarrito } from "./carrito.js";
 
 const contenido = document.getElementById("contenido");
 
+// ----------------------------------------------------
+// Mostrar Productos
+// ----------------------------------------------------
 export async function mostrarProductos(categoria = "todos") {
   if (!contenido) return;
   contenido.innerHTML = "<h2>Cargando productos...</h2>";
@@ -15,46 +18,54 @@ export async function mostrarProductos(categoria = "todos") {
         ? await obtenerProductos()
         : await obtenerProductosPorCategoria(categoria);
 
+    // Recuperar favoritos del almacenamiento local
+    let favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
+
+    // Generar el HTML
     contenido.innerHTML = `
-  <section class="productos">
-<h2>${
-      categoria === "todos"
-        ? "Todos los productos"
-        : categoria === "men's clothing"
-        ? "Ropa para Hombre"
-        : categoria === "women's clothing"
-        ? "Ropa para Mujer"
-        : categoria === "electronics"
-        ? "Tecnología"
-        : categoria === "jewelery"
-        ? "Joyería"
-        : categoria
-    }</h2>
+      <section class="productos">
+        <h2>${
+          categoria === "todos"
+            ? "Todos los productos"
+            : categoria === "men's clothing"
+            ? "Ropa para Hombre"
+            : categoria === "women's clothing"
+            ? "Ropa para Mujer"
+            : categoria === "electronics"
+            ? "Tecnología"
+            : categoria === "jewelery"
+            ? "Joyería"
+            : categoria
+        }</h2>
 
-    <input type="text" id="buscador" placeholder="Buscar producto..." class="buscador">
-    <div class="grid-productos">
-      ${productos
-        .map(
-          (p) => `
-        <div class="card-producto">
-          <img src="${p.image}" alt="${escapeHtml(p.title)}">
-         <h4 onclick="mostrarDetalleProducto(${p.id})">${escapeHtml(
-            truncate(p.title, 70)
-          )}</h4>
-          <p>$${p.price}</p>
-          <div class="acciones-producto">
-  <button class="btn-agregar" data-id="${p.id}">Agregar al carrito</button>
-  <button class="btn-favorito" onclick="toggleFavorito(${p.id})">⭐</button>
-</div>
-
+        <input type="text" id="buscador" placeholder="Buscar producto..." class="buscador">
+        <div class="grid-productos">
+          ${productos
+            .map(
+              (p) => `
+            <div class="card-producto">
+              <img src="${p.image}" alt="${escapeHtml(p.title)}">
+              <h4 onclick="mostrarDetalleProducto(${p.id})">${escapeHtml(
+                truncate(p.title, 70)
+              )}</h4>
+              <p>$${p.price}</p>
+              <div class="acciones-producto">
+                <button class="btn-agregar" data-id="${p.id}">Agregar al carrito</button>
+                <button class="btn-favorito" data-id="${p.id}">
+                  ${favoritos.includes(p.id) ? "❤️" : "🤍"}
+                </button>
+              </div>
+            </div>
+          `
+            )
+            .join("")}
         </div>
-      `
-        )
-        .join("")}
-    </div>
-  </section>
-`;
+      </section>
+    `;
+
+    // ----------------------------------------------------
     // Buscador dinámico
+    // ----------------------------------------------------
     const input = document.getElementById("buscador");
     input.addEventListener("input", (e) => {
       const valor = e.target.value.toLowerCase();
@@ -64,11 +75,31 @@ export async function mostrarProductos(categoria = "todos") {
       });
     });
 
-    // Escuchamos clicks en botones del carrito
+    // ----------------------------------------------------
+    // Evento: Agregar al carrito
+    // ----------------------------------------------------
     document.querySelectorAll(".btn-agregar").forEach((btn) => {
       btn.addEventListener("click", () =>
         agregarAlCarrito(parseInt(btn.dataset.id))
       );
+    });
+
+    // ----------------------------------------------------
+    // Evento: Favoritos ❤️🤍
+    // ----------------------------------------------------
+    document.querySelectorAll(".btn-favorito").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const id = parseInt(btn.dataset.id);
+        if (favoritos.includes(id)) {
+          favoritos = favoritos.filter((f) => f !== id);
+        } else {
+          favoritos.push(id);
+        }
+        localStorage.setItem("favoritos", JSON.stringify(favoritos));
+
+        // Actualizar icono del botón
+        btn.textContent = favoritos.includes(id) ? "❤️" : "🤍";
+      });
     });
   } catch (error) {
     console.error(error);
@@ -76,6 +107,9 @@ export async function mostrarProductos(categoria = "todos") {
   }
 }
 
+// ----------------------------------------------------
+// HOME
+// ----------------------------------------------------
 export function mostrarHome() {
   if (!contenido) return;
   contenido.innerHTML = `
@@ -105,15 +139,14 @@ export function mostrarHome() {
     </section>
   `;
 
-  document
-    .getElementById("ver-todo")
-    .addEventListener("click", () => mostrarProductos("todos"));
+  document.getElementById("ver-todo").addEventListener("click", () => mostrarProductos("todos"));
   document.querySelectorAll(".card").forEach((card) => {
     card.addEventListener("click", () => mostrarProductos(card.dataset.cat));
   });
 
   mostrarProductos("todos");
 }
+
 // ----------------------------------------------------
 // Formularios de usuario
 // ----------------------------------------------------
@@ -145,6 +178,7 @@ export function mostrarRegistro() {
     </section>
   `;
 }
+
 // ----------------------------------------------------
 // Sección de Pago
 // ----------------------------------------------------
@@ -168,9 +202,13 @@ export function mostrarPago(total = 0) {
   form.addEventListener("submit", (e) => {
     e.preventDefault();
     alert("✅ Pago realizado con éxito. ¡Gracias por tu compra!");
-    mostrarHome(); // vuelve al inicio
+    mostrarHome();
   });
 }
+
+// ----------------------------------------------------
+// Detalle de producto
+// ----------------------------------------------------
 export async function mostrarDetalleProducto(id) {
   const res = await fetch(`https://fakestoreapi.com/products/${id}`);
   const p = await res.json();
@@ -181,12 +219,11 @@ export async function mostrarDetalleProducto(id) {
       <h2>${escapeHtml(p.title)}</h2>
       <p>${escapeHtml(p.description)}</p>
       <p><b>Precio:</b> $${p.price}</p>
-      <button class="btn-agregar" onclick="agregarAlCarrito(${
-        p.id
-      })">Agregar al carrito</button>
+      <button class="btn-agregar" onclick="agregarAlCarrito(${p.id})">Agregar al carrito</button>
     </section>
   `;
 }
+
 // ----------------------------------------------------
 // Sección Informativa
 // ----------------------------------------------------
@@ -194,38 +231,29 @@ export function mostrarInformativa() {
   const contenedor = document.getElementById("contenido");
   contenedor.innerHTML = `
     <section class="informativa">
-   <div class="info-header">
-         <img src="assets/Black and White Retro Y2K Streetwear Clothing Logo.png" alt="Logo de Mi Tienda" class="logo-img" />
-       <h2>Acerca de Mi Tienda Online</h2>
+      <div class="info-header">
+        <img src="assets/Black and White Retro Y2K Streetwear Clothing Logo.png" alt="Logo de Mi Tienda" class="logo-img" />
+        <h2>Acerca de Mi Tienda Online</h2>
       </div>
       <div class="info-grid">
         <div class="info-card">
           <h3>¿Qué es esta app?</h3>
-          <p>Una tienda en línea que utiliza la <b>FakeStore API</b> para mostrar productos reales, 
-          permitiéndote explorar, agregar al carrito y marcar tus favoritos.</p>
+          <p>Una tienda en línea que utiliza la <b>FakeStore API</b> para mostrar productos reales, permitiéndote explorar, agregar al carrito y marcar tus favoritos.</p>
         </div>
-
         <div class="info-card">
           <h3>Funcionalidades</h3>
           <ul>
-            <li>Secciones separadoras por categorias
-              <p> * Ropa hombre  <p>
-              <p> * Ropa mujer  <p>
-              <p> * Ropa tecnologia  <p>
-              <p> * Ropa favoritos  <p>
-            </li>
+            <li>Secciones separadas por categorías</li>
             <li>Carrito funcional conectado a la API</li>
-            <li>Sistema de favoritos</li>
-            <li>Seccion de inicio y registro</li>
+            <li>Sistema de favoritos persistente</li>
+            <li>Inicio de sesión y registro</li>
           </ul>
         </div>
         <div class="info-card">
-          <h3>Proposito</h3>
-          <p>Proyecto realizado para la clase de desarrollo de aplicaciones moviles, con el proposito de demostrar el uso de las apis 
-          en el desdarrollo web y el uso de android studio</p>
+          <h3>Propósito</h3>
+          <p>Proyecto realizado para la clase de desarrollo de aplicaciones móviles, demostrando el uso de APIs en desarrollo web y Android Studio.</p>
         </div>
       </div>
-
       <div class="info-footer">
         <p>Datos generados en tiempo real desde la API.</p>
       </div>

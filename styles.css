@@ -401,3 +401,48 @@ img {
   display: inline-block;
   cursor: pointer;
 }
+/* ------------------------------
+   Botón de Favorito (mismo tamaño que "Agregar al carrito")
+------------------------------ */
+.btn-favorito {
+  background: #ffd54f;          /* Amarillo suave */
+  color: #222;                  /* Texto oscuro para contraste */
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  padding: 8px 12px;            /* Igual que .btn-agregar */
+  font-size: 0.9em;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.btn-favorito:hover {
+  background: #ffca28;          /* Un poco más oscuro al pasar el mouse */
+  transform: scale(1.05);
+}
+
+/* En móviles: tamaño un poco mayor */
+@media (max-width: 600px) {
+  .btn-favorito {
+    padding: 10px 14px;
+    font-size: 1em;
+  }
+}
+.acciones-producto {
+  display: flex;
+  justify-content: center;
+  gap: 10px;    /* 🔹 Espacio entre botones */
+}
+.btn-favorito {
+  background: none;
+  border: none;
+  font-size: 1.6em;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  line-height: 1;
+}
+
+.btn-favorito:hover {
+  transform: scale(1.2);
+}
+
