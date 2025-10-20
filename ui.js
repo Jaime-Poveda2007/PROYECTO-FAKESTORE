@@ -127,7 +127,9 @@ export async function mostrarProductos(categoria = "todos") {
       });
     });
   } catch (error) {
-    console.error("Error cargando productos:", error);
+    console.error("Error al cargar productos:", error.message);
+    alert("⚠️ Error: " + error.message);
+
     contenido.textContent = "Error al cargar productos.";
   }
 }
