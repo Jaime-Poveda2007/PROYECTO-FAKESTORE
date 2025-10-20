@@ -1,4 +1,3 @@
-// Subcodigos en js/app.js
 // ----------------------------------------------------
 // Archivo principal: coordina el flujo general
 // ----------------------------------------------------
